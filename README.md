@@ -1,0 +1,5 @@
+Building an HTML5 Flappy Bird Clone using Adobe Animate CC Tutorial
+===================================================================
+
+A *[tutorial](http://blogs.adobe.com/animate/)* by *[Christopher Caleb](http://www.yeahbutisitflash.com/?page_id=2)* showing how to create an HTML5 Flappy Bird clone using Adobe Animate CC and the CreateJS suite.
+

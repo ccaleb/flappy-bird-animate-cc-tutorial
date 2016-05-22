@@ -1,0 +1,69 @@
+<!--
+	NOTES:
+	1. All tokens are represented by '$' sign in the template.
+	2. You can write your code only wherever mentioned.
+	3. All occurrences of existing tokens will be replaced by their appropriate values.
+-->
+
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>flappy</title>
+<!-- write your code here -->
+
+
+<script src="https://code.createjs.com/createjs-2015.11.26.min.js"></script>
+<script src="flappy.js?1463316228831"></script>
+<script src="ground.js"></script>
+<script src="pipes.js"></script>
+<script src="ui.js"></script>
+<script src="bird.js"></script>
+<script src="main.js"></script>
+<script>
+var canvas, stage, exportRoot, main;
+function init() {
+	// --- write your JS code here ---
+	
+	canvas = document.getElementById("canvas");
+	images = images||{};
+
+	var loader = new createjs.LoadQueue(false);
+	loader.addEventListener("fileload", handleFileLoad);
+	loader.addEventListener("complete", handleComplete);
+	loader.loadManifest(lib.properties.manifest);
+}
+
+function handleFileLoad(evt) {
+	if (evt.item.type == "image") { images[evt.item.id] = evt.result; }
+}
+
+function handleComplete(evt) {
+	exportRoot = new lib.flappy();
+
+	stage = new createjs.Stage(canvas);
+	stage.addChild(exportRoot);
+	stage.update();
+
+	main = new Main();
+
+	createjs.Ticker.setFPS(lib.properties.fps);
+	//createjs.Ticker.addEventListener("tick", stage);
+	createjs.Ticker.addEventListener("tick", handleTick);
+}
+
+function handleTick(evt) {
+	main.update(evt);
+	stage.update();
+	//console.log("*** ground0: " + exportRoot.ground0);
+}
+
+</script>
+
+<!-- write your code here -->
+
+</head>
+<body onload="init();" style="background-color:#D4D4D4;margin:0px;">
+	<canvas id="canvas" width="300" height="400" style="background-color:#FFFFFF"></canvas>
+</body>
+</html>

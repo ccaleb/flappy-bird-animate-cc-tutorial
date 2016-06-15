@@ -50,7 +50,8 @@ Ground.prototype.isBirdTouchingGround = function(bird)
 {
 	for (var i = 0; i < this.slices.length; i++)
 	{
-		if (bird.hitTest(this.slices[i]))
+		//if (bird.hitTest(this.slices[i]))
+		if (bird.simpleHitTest(this.slices[i]))
 		{
 			return true;
 		}

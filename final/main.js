@@ -6,6 +6,8 @@ function Main()
 	this.bird = new Bird();
 	this.score = 0;
 
+	this.registerSound();
+
 	canvas.onmousedown = this.userPressed.bind(this);
 	window.onkeydown = this.userPressed.bind(this);
 }
@@ -24,6 +26,13 @@ Main.prototype.update = function(evt)
 	this.checkForBirdPassingPipe();
 	this.checkForBirdCollidingWithPipes();
 	this.checkForBirdCollidingWithGround();
+}
+
+Main.prototype.registerSound = function()
+{
+	createjs.Sound.registerSound("sound/point.wav", "point");
+	createjs.Sound.registerSound("sound/flap.wav", "flap");
+	createjs.Sound.registerSound("sound/hit.wav", "hit");
 }
 
 Main.prototype.startGame = function()
@@ -56,6 +65,7 @@ Main.prototype.scoredPoint = function()
 {
 	this.score++;
 	this.ui.updateScore(this.score);
+	createjs.Sound.play("point");
 }
 
 Main.prototype.checkForBirdPassingPipe = function()

@@ -5,6 +5,11 @@ function Bird()
 	this.dy = 0;
 	this.initY = this.mc.y;
 	this.state = Bird.DEAD;
+
+	for (var i = 0; i < this.hitMcs.length; i++)
+	{
+		this.hitMcs[i].visible = false;
+	}
 }
 
 Bird.ALIVE = 0;
@@ -38,6 +43,7 @@ Bird.prototype.flap = function()
 	if (this.state == Bird.ALIVE && this.mc.y > 0)
 	{
 		this.dy = Main.FLAP_IMPULSE;
+		createjs.Sound.play("flap");
 	}
 }
 
@@ -47,11 +53,16 @@ Bird.prototype.fallFromSky = function()
 	{
 		this.state = Bird.DYING;
 		this.dy = 0;
+		createjs.Sound.play("hit");
 	}
 }
 
 Bird.prototype.hitGround = function()
 {
+	if (this.state == Bird.ALIVE)
+	{
+		createjs.Sound.play("hit");
+	}
 	this.state = Bird.DEAD;
 	this.mc.stop();
 }
@@ -100,6 +111,18 @@ Bird.prototype.hitTest = function(target)
 		{
 			return true;
 		}
+	}
+
+	return false;
+}
+
+Bird.prototype.simpleHitTest = function(target)
+{
+	var pt = this.hitMcs[3].localToLocal(0, 0, target);
+	var collision = target.hitTest(pt.x, pt.y);
+	if (collision == true)
+	{
+		return true;
 	}
 
 	return false;

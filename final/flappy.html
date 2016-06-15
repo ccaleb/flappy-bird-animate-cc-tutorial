@@ -14,6 +14,7 @@
 
 
 <script src="https://code.createjs.com/createjs-2015.11.26.min.js"></script>
+<script src="https://code.createjs.com/soundjs-0.6.2.min.js"></script>
 <script src="flappy.js?1463316228831"></script>
 <script src="ground.js"></script>
 <script src="pipes.js"></script>
@@ -32,6 +33,7 @@ function init() {
 	loader.addEventListener("fileload", handleFileLoad);
 	loader.addEventListener("complete", handleComplete);
 	loader.loadManifest(lib.properties.manifest);
+	handleComplete();
 }
 
 function handleFileLoad(evt) {
@@ -48,14 +50,12 @@ function handleComplete(evt) {
 	main = new Main();
 
 	createjs.Ticker.setFPS(lib.properties.fps);
-	//createjs.Ticker.addEventListener("tick", stage);
 	createjs.Ticker.addEventListener("tick", handleTick);
 }
 
 function handleTick(evt) {
 	main.update(evt);
 	stage.update();
-	//console.log("*** ground0: " + exportRoot.ground0);
 }
 
 </script>

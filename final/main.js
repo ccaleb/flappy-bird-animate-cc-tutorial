@@ -1,56 +1,55 @@
 function Main()
 {
-	this.ground = new Ground();
-	this.pipes = new Pipes();
-	this.ui = new UI();
-	this.bird = new Bird();
-	this.score = 0;
+  this.ground = new Ground();
+  this.pipes = new Pipes();
+  this.bird = new Bird();
+  this.ui = new UI();
 
-	this.registerSound();
-
-	canvas.onmousedown = this.userPressed.bind(this);
-	window.onkeydown = this.userPressed.bind(this);
+  this.score = 0;
+	
+  this.registerSound();
+	
+  createjs.Ticker.addEventListener("tick", this.update.bind(this));
+	
+  canvas.onmousedown = this.userPressed.bind(this);
+  window.onkeydown = this.userPressed.bind(this);
 }
 
 Main.SCROLL_SPEED = 3.0;
+Main.GRAVITY = 0.55;
 Main.FLAP_IMPULSE = -8.15;
 Main.MAX_VELOCITY = 15;
-Main.GRAVITY = 0.55;
 
 Main.prototype.update = function(evt)
 {
-	this.ground.update();
-	this.pipes.update();
-	this.bird.update();
-
-	this.checkForBirdPassingPipe();
-	this.checkForBirdCollidingWithPipes();
-	this.checkForBirdCollidingWithGround();
+  this.bird.update();
+  this.ground.update();
+  this.pipes.update();
+	
+  this.checkForBirdCollidingWithGround();
+  this.checkForBirdCollidingWithPipes();
+  this.checkForBirdPassingPipe();
 }
 
-Main.prototype.registerSound = function()
+Main.prototype.userPressed = function(evt)
 {
-	createjs.Sound.registerSound("sound/point.wav", "point");
-	createjs.Sound.registerSound("sound/flap.wav", "flap");
-	createjs.Sound.registerSound("sound/hit.wav", "hit");
+  if (this.bird.isDead())
+  {
+    this.startGame();
+  }
+  else
+  {
+    this.bird.flap();
+  }
 }
 
 Main.prototype.startGame = function()
 {
-	this.score = 0;
-
-	this.ground.startScrolling();
-	this.pipes.startScrolling();
-	this.bird.startFlying();
-	this.ui.gameStart();
-}
-
-Main.prototype.birdHitPipe = function()
-{
-	this.bird.fallFromSky();
-	this.ground.stopScrolling();
-	this.pipes.stopScrolling();
-	this.ui.triggerScreenFlash();
+  this.score = 0;
+  this.ground.startScrolling();
+  this.pipes.startScrolling();
+  this.bird.startFlying();
+  this.ui.gameStart();
 }
 
 Main.prototype.birdHitGround = function()
@@ -61,11 +60,34 @@ Main.prototype.birdHitGround = function()
 	this.ui.gameOver();
 }
 
-Main.prototype.scoredPoint = function()
+Main.prototype.birdHitPipe = function()
 {
-	this.score++;
-	this.ui.updateScore(this.score);
-	createjs.Sound.play("point");
+	this.bird.fallFromSky();
+	this.ground.stopScrolling();
+	this.pipes.stopScrolling();
+	this.ui.triggerScreenFlash();
+}
+
+Main.prototype.checkForBirdCollidingWithGround = function()
+{
+  if (this.bird.isDead() == false)
+  {
+    if (this.ground.isBirdTouchingGround(this.bird))
+	{
+	  this.birdHitGround();
+	}
+  }
+}
+
+Main.prototype.checkForBirdCollidingWithPipes = function()
+{
+  if (this.bird.isAlive())
+  {
+    if (this.pipes.isBirdTouchingAPipe(this.bird))
+	{
+	  this.birdHitPipe();
+	}
+  }
 }
 
 Main.prototype.checkForBirdPassingPipe = function()
@@ -74,43 +96,24 @@ Main.prototype.checkForBirdPassingPipe = function()
 	{
 		if (this.pipes.hasBirdPassedApproachingPipe(this.bird))
 		{
-			this.pipes.birdPassedApproachingPipe();
+			this.pipes.setNextApproachingPipe();
 			this.scoredPoint();
 		}
 	}
 }
 
-Main.prototype.checkForBirdCollidingWithPipes = function()
+Main.prototype.scoredPoint = function()
 {
-	if (this.bird.isAlive())
-	{
-		if (this.pipes.isBirdTouchingAPipe(this.bird))
-		{
-			this.birdHitPipe();
-		}
-	}
+	this.score++;
+	this.ui.updateScore(this.score);
+	createjs.Sound.play("point");
 }
 
-Main.prototype.checkForBirdCollidingWithGround = function()
+Main.prototype.registerSound = function()
 {
-	if (this.bird.isDead() == false)
-	{
-		if (this.ground.isBirdTouchingGround(this.bird))
-		{
-			this.birdHitGround();
-		}
-	}
+  createjs.Sound.registerSound("sound/point.wav", "point");
+  createjs.Sound.registerSound("sound/flap.wav", "flap");
+  createjs.Sound.registerSound("sound/hit.wav", "hit");
 }
 
-Main.prototype.userPressed = function(evt)
-{
-	if (this.bird.isDead())
-	{
-		this.startGame();
-	}
-	else
-	{
-		this.bird.flap();
-	}
-}
-
+var main = new Main();
